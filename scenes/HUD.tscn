@@ -37,7 +37,7 @@ position = Vector2( -57, 57 )
 shape = SubResource( 1 )
 
 [node name="Shoot_Analog" type="Node2D" parent="."]
-position = Vector2( 972, 644 )
+position = Vector2( 1190, 635 )
 script = ExtResource( 3 )
 isDynamicallyShowing = true
 typeAnalogic = 4
@@ -46,7 +46,7 @@ bigBallTexture = ExtResource( 1 )
 smallBallTexture = ExtResource( 2 )
 
 [node name="Area_Shoot_Analog" type="Area2D" parent="."]
-position = Vector2( 972, 644 )
+position = Vector2( 1190, 635 )
 
 [node name="Area_Shape_Shoot_Analog" type="CollisionShape2D" parent="Area_Shoot_Analog"]
 shape = SubResource( 2 )

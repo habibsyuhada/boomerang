@@ -14,6 +14,8 @@ var not_collide = true
 var dist = 0.0
 var friction = 0.025
 var acceleration = 0.05
+var rotation_velocity = 0.0
+var position_old = Vector3.ZERO
 
 
 # Called when the node enters the scene tree for the first time.
@@ -40,7 +42,9 @@ func _physics_process(delta):
 			return_boomerang(delta)
 		FREE_ROAM :
 			free_roam(delta)
-	pass
+			
+	
+	position_old = global_transform.origin
 
 func reset():
 	state = IDLE
@@ -55,16 +59,29 @@ func throw():
 	state = FLY
 	$Timer.start(time_return)
 	rotation = parent.rotation
-	velocity = Vector3(-throw_speed, 0, 0).rotated(Vector3(0, 1, 0), rotation.y)
 	not_collide = true
 
 func fly(delta):
+	velocity = Vector3(-throw_speed, 0, 0).rotated(Vector3(0, 1, 0), rotation.y)
 	var collision = move_and_collide(velocity * delta)
-	rotation_degrees.y += spin_speed*delta
+	$Sprite.rotation_degrees.y += spin_speed*delta
 	if collision:
 		velocity = velocity.bounce(collision.normal)
 		state = FREE_ROAM
-
+	
+	for member in get_tree().get_nodes_in_group("Players"):
+		if member.name != "Player" :
+			#var target_dir = rad2deg(Vector2(position_old.x, position_old.z).angle_to_point(Vector2(member.global_transform.origin.x, member.global_transform.origin.z)))
+			#var default_target_dir = rad2deg(Vector2(position_old.x, position_old.z).angle_to_point(Vector2(global_transform.origin.x, global_transform.origin.z)))
+			#var target_dir = Vector2(global_transform.origin.x, global_transform.origin.z).angle_to_point(Vector2(member.global_transform.origin.x, member.global_transform.origin.z))
+			var target_dir = Vector2(member.global_transform.origin.x, member.global_transform.origin.y) - Vector2(-global_transform.origin.x, global_transform.origin.z)
+			target_dir = target_dir.normalized()
+			target_dir = target_dir.angle()
+			var max_angle = PI * 2
+			var difference = fmod(target_dir - rotation.y, max_angle)
+			target_dir =  fmod(2 * difference, max_angle) - difference
+			rotation.y = rotation.y + target_dir * 1 * delta
+			
 func _on_Timer_timeout():
 	if state == FLY :
 		state = RETURN
@@ -74,7 +91,7 @@ func return_boomerang(delta):
 	var temp_vel = pos - global_transform.origin
 	velocity = lerp(velocity, temp_vel, acceleration)
 	var collision = move_and_collide(velocity * delta)
-	rotation_degrees.y += spin_speed*delta
+	$Sprite.rotation_degrees.y += spin_speed*delta
 	if collision:
 		velocity = velocity.bounce(collision.normal)
 		state = FREE_ROAM
@@ -88,7 +105,7 @@ func free_roam(delta):
 		var highest_speed = velocity.x
 		if highest_speed < velocity.z:
 			highest_speed = velocity.z
-		rotation_degrees.y += spin_speed*delta*highest_speed/throw_speed
+		$Sprite.rotation_degrees.y += spin_speed*delta*highest_speed/throw_speed
 		global_transform.origin.y = 1
 		if collision:
 			velocity = velocity.bounce(collision.normal)
@@ -101,7 +118,7 @@ func pull(delta):
 	var highest_speed = velocity.x
 	if highest_speed < velocity.z:
 		highest_speed = velocity.z
-	rotation_degrees.y += spin_speed*delta*highest_speed/throw_speed
+	$Sprite.rotation_degrees.y += spin_speed*delta*highest_speed/throw_speed
 	if collision:
 		velocity = velocity.bounce(collision.normal)
 		state = FREE_ROAM

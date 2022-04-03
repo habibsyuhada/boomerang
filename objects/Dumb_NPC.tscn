@@ -1,15 +1,14 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://objects/Player.gd" type="Script" id=1]
-
 [sub_resource type="CylinderShape" id=1]
 
 [sub_resource type="CylinderMesh" id=2]
 
 [sub_resource type="CubeMesh" id=3]
 
-[node name="Player" type="KinematicBody"]
-script = ExtResource( 1 )
+[sub_resource type="CylinderShape" id=4]
+
+[node name="Dumb_NPC" type="KinematicBody" groups=["Players"]]
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 1 )
@@ -23,3 +22,8 @@ transform = Transform( 0.432285, 0, 0, 0, 0.143548, 0, 0, 0, 0.612594, -1, 0, 0 
 mesh = SubResource( 3 )
 skeleton = NodePath("../..")
 material/0 = null
+
+[node name="Area" type="Area" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="Area"]
+shape = SubResource( 4 )
