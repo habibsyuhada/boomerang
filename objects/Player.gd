@@ -26,7 +26,18 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	get_input()
-	
+	for member in get_tree().get_nodes_in_group("Players"):
+		if member.name != "Player" :
+			var target_dir = (Vector2(member.global_transform.origin.x, member.global_transform.origin.z) - Vector2(global_transform.origin.x, global_transform.origin.z)).normalized().angle()
+			var target_vector = Vector2(cos(target_dir), sin(target_dir))
+			target_vector.y = target_vector.y * -1
+			target_dir = Vector2.ZERO.angle_to_point(target_vector)
+			#rotation.y = target_dir
+			var max_angle = PI * 2
+			var difference = fmod(target_dir - rotation.y, max_angle)
+			difference =  fmod(2 * difference, max_angle) - difference
+			print(rad2deg(difference))
+			
 	if ismove_analog_pressed :
 		velocity = Vector3.ZERO
 		if isshot_analog_pressed :
@@ -36,10 +47,12 @@ func _physics_process(delta):
 			velocity.x = move_analog_value.x * speed
 			velocity.z = move_analog_value.y * speed
 		if velocity != Vector3.ZERO and !isshot_analog_pressed :
-			rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(velocity.x, -velocity.z)))
+			#rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(velocity.x, -velocity.z)))
+			pass
 
 	if isshot_analog_pressed :
-				rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(shot_analog_value.x, -shot_analog_value.y)))
+				#rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(shot_analog_value.x, -shot_analog_value.y)))
+				pass
 	
 	move_and_slide(velocity)
 	global_transform.origin.y = 1
@@ -59,7 +72,8 @@ func get_input():
 		if Input.is_action_pressed("ui_up"):
 			velocity.z = -speed
 		if velocity != Vector3.ZERO :
-			rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(velocity.x, -velocity.z)))
+			#rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(velocity.x, -velocity.z)))
+			pass
 
 func _on_Move_Analog_analogPressed():
 	ismove_analog_pressed = true

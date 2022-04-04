@@ -27,7 +27,7 @@ mesh = SubResource( 2 )
 material/0 = null
 
 [node name="Player" parent="World" instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+transform = Transform( 0, 0, -1, 0, 1, 0, 1, 0, 0, 10, 1, -18 )
 
 [node name="Camera" type="Camera" parent="World"]
 transform = Transform( 1, 0, 0, 0, 0.5, 0.866026, 0, -0.866026, 0.5, 0, 35, 20 )
@@ -43,4 +43,4 @@ collision_mask = 2
 time_return = 0.5
 
 [node name="Dumb_NPC" parent="World" instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.49354, 1, -18.8095 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, -18 )

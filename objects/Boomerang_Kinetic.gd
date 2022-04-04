@@ -16,6 +16,7 @@ var friction = 0.025
 var acceleration = 0.05
 var rotation_velocity = 0.0
 var position_old = Vector3.ZERO
+var speed_rotation = 2
 
 
 # Called when the node enters the scene tree for the first time.
@@ -71,16 +72,23 @@ func fly(delta):
 	
 	for member in get_tree().get_nodes_in_group("Players"):
 		if member.name != "Player" :
-			#var target_dir = rad2deg(Vector2(position_old.x, position_old.z).angle_to_point(Vector2(member.global_transform.origin.x, member.global_transform.origin.z)))
-			#var default_target_dir = rad2deg(Vector2(position_old.x, position_old.z).angle_to_point(Vector2(global_transform.origin.x, global_transform.origin.z)))
-			#var target_dir = Vector2(global_transform.origin.x, global_transform.origin.z).angle_to_point(Vector2(member.global_transform.origin.x, member.global_transform.origin.z))
-			var target_dir = Vector2(member.global_transform.origin.x, member.global_transform.origin.y) - Vector2(-global_transform.origin.x, global_transform.origin.z)
-			target_dir = target_dir.normalized()
-			target_dir = target_dir.angle()
+			var target_dir = (Vector2(member.global_transform.origin.x, member.global_transform.origin.z) - Vector2(global_transform.origin.x, global_transform.origin.z)).normalized().angle()
+			var target_vector = Vector2(cos(target_dir), sin(target_dir))
+			target_vector.y = target_vector.y * -1
+			target_dir = Vector2.ZERO.angle_to_point(target_vector)
 			var max_angle = PI * 2
 			var difference = fmod(target_dir - rotation.y, max_angle)
-			target_dir =  fmod(2 * difference, max_angle) - difference
-			rotation.y = rotation.y + target_dir * 1 * delta
+			difference =  fmod(2 * difference, max_angle) - difference
+			
+			target_dir = rotation.y + difference
+			if abs(rotation.y - target_dir) >= 1 :
+				print("notabs")
+				if rotation.y < target_dir : rotation.y += abs(rotation.y - target_dir) * delta
+				if rotation.y > target_dir : rotation.y += -1 * abs(rotation.y - target_dir) * delta
+			else :
+				print("abs")
+				if rotation.y < target_dir : rotation.y += abs(rotation.y - target_dir) * delta
+				if rotation.y > target_dir : rotation.y -= abs(rotation.y - target_dir) * delta
 			
 func _on_Timer_timeout():
 	if state == FLY :
