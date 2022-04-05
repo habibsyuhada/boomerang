@@ -1,12 +1,19 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Global_Variable.gd" type="Script" id=1]
 [ext_resource path="res://objects/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://objects/Dumb_NPC.tscn" type="PackedScene" id=3]
 [ext_resource path="res://objects/Boomerang_Kinetic.tscn" type="PackedScene" id=4]
+[ext_resource path="res://objects/NPC.tscn" type="PackedScene" id=5]
 
 [node name="Global" type="Node"]
 script = ExtResource( 1 )
 Player = ExtResource( 2 )
+NPC = ExtResource( 5 )
 Dummy_NPC = ExtResource( 3 )
 Boomerang = ExtResource( 4 )
+
+[node name="Timer_Slow_Motion" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="Timer_Slow_Motion" to="." method="_on_Timer_Slow_Motion_timeout"]

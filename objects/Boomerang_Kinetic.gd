@@ -23,6 +23,8 @@ var owner_name = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if parent == null :
+		parent = get_node_or_null('/root/World/Player')
 	reset()
 	
 	HUD.connect("_on_Shoot_Analog_analogRelease", self, "_on_Shoot_Analog_analogRelease")
@@ -51,6 +53,7 @@ func _physics_process(delta):
 
 func reset():
 	state = IDLE
+	print(parent)
 	global_transform.origin = parent.global_transform.origin
 
 func idle():

@@ -3,12 +3,14 @@ extends Spatial
 
 # Declare member variables here. Examples:
 # var a = 2
-# var b = "text"
+var respawn_points = null
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	HUD.visible = false
+	Global.Total_Player = 0
+	Global.Total_NPC = 2
 	
 	start()
 	
@@ -27,7 +29,16 @@ func _ready():
 #	pass
 
 func start():
-	var dummy = Global.Dummy_NPC.instance()
-	dummy.name = "Dummy"
-	add_child(dummy)
-	pass
+	respawn_points = $Respawn_Point.get_children()
+	
+	for n in Global.Total_NPC:
+		if n+1 <= len(respawn_points) :
+			var player = Global.NPC.instance()
+			player.name = "NPC"+str(n)
+			player.global_transform.origin = respawn_points[n].global_transform.origin
+			add_child(player)
+			
+			var boomerang = Global.Boomerang.instance()
+			boomerang.name = "Boomerang_" + player.name
+			boomerang.parent = get_node("/root/World/"+player.name)
+			add_child(boomerang)
