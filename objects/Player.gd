@@ -11,16 +11,16 @@ var move_analog_value = Vector2.ZERO
 var isshot_analog_pressed = false
 var shot_analog_value = Vector2.ZERO
 
+var boomerang_name = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var hud: = get_node("/root/Game/HUD")
-	hud.connect("_on_Move_Analog_analogChange", self, "_on_Move_Analog_analogChange")
-	hud.connect("_on_Move_Analog_analogPressed", self, "_on_Move_Analog_analogPressed")
-	hud.connect("_on_Move_Analog_analogRelease", self, "_on_Move_Analog_analogRelease")
-	hud.connect("_on_Shoot_Analog_analogChange", self, "_on_Shoot_Analog_analogChange")
-	hud.connect("_on_Shoot_Analog_analogPressed", self, "_on_Shoot_Analog_analogPressed")
-	hud.connect("_on_Shoot_Analog_analogRelease", self, "_on_Shoot_Analog_analogRelease")
+	HUD.connect("_on_Move_Analog_analogChange", self, "_on_Move_Analog_analogChange")
+	HUD.connect("_on_Move_Analog_analogPressed", self, "_on_Move_Analog_analogPressed")
+	HUD.connect("_on_Move_Analog_analogRelease", self, "_on_Move_Analog_analogRelease")
+	HUD.connect("_on_Shoot_Analog_analogChange", self, "_on_Shoot_Analog_analogChange")
+	HUD.connect("_on_Shoot_Analog_analogPressed", self, "_on_Shoot_Analog_analogPressed")
+	HUD.connect("_on_Shoot_Analog_analogRelease", self, "_on_Shoot_Analog_analogRelease")
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -36,7 +36,7 @@ func _physics_process(delta):
 			var max_angle = PI * 2
 			var difference = fmod(target_dir - rotation.y, max_angle)
 			difference =  fmod(2 * difference, max_angle) - difference
-			print(rad2deg(difference))
+			#print(rad2deg(difference))
 			
 	if ismove_analog_pressed :
 		velocity = Vector3.ZERO
@@ -47,11 +47,11 @@ func _physics_process(delta):
 			velocity.x = move_analog_value.x * speed
 			velocity.z = move_analog_value.y * speed
 		if velocity != Vector3.ZERO and !isshot_analog_pressed :
-			#rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(velocity.x, -velocity.z)))
+			rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(velocity.x, -velocity.z)))
 			pass
 
 	if isshot_analog_pressed :
-				#rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(shot_analog_value.x, -shot_analog_value.y)))
+				rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(shot_analog_value.x, -shot_analog_value.y)))
 				pass
 	
 	move_and_slide(velocity)
@@ -72,7 +72,7 @@ func get_input():
 		if Input.is_action_pressed("ui_up"):
 			velocity.z = -speed
 		if velocity != Vector3.ZERO :
-			#rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(velocity.x, -velocity.z)))
+			rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(velocity.x, -velocity.z)))
 			pass
 
 func _on_Move_Analog_analogPressed():

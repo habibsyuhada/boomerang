@@ -4,8 +4,8 @@ extends KinematicBody
 # Declare member variables here. Examples:
 enum {IDLE, FLY, RETURN, FREE_ROAM}
 export (float) var throw_speed = 100
-export var time_return = 1.0
-onready var parent: = get_node("/root/Game/World/Player")
+export var time_return = 0.5
+var parent = null
 var state: int = IDLE
 var velocity: = Vector3.ZERO
 var pos: = Vector3.ZERO
@@ -16,21 +16,23 @@ var friction = 0.025
 var acceleration = 0.05
 var rotation_velocity = 0.0
 var position_old = Vector3.ZERO
-var speed_rotation = 2
+var speed_rotation = 10.0
+
+var owner_name = ""
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	reset()
 	
-	var hud: = get_node("/root/Game/HUD")
-	hud.connect("_on_Shoot_Analog_analogRelease", self, "_on_Shoot_Analog_analogRelease")
+	HUD.connect("_on_Shoot_Analog_analogRelease", self, "_on_Shoot_Analog_analogRelease")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	global_transform.origin.y = 1
 	if state != IDLE and state != FLY :
 		dist = global_transform.origin.distance_to(parent.global_transform.origin)
+		#print(dist)
 		if dist < throw_speed * delta:
 			reset()
 			
@@ -61,6 +63,8 @@ func throw():
 	$Timer.start(time_return)
 	rotation = parent.rotation
 	not_collide = true
+	speed_rotation = rand_range(1,10)
+	#print(speed_rotation)
 
 func fly(delta):
 	velocity = Vector3(-throw_speed, 0, 0).rotated(Vector3(0, 1, 0), rotation.y)
@@ -70,25 +74,22 @@ func fly(delta):
 		velocity = velocity.bounce(collision.normal)
 		state = FREE_ROAM
 	
+	var nearest_enemy_rotation = 9999.9
 	for member in get_tree().get_nodes_in_group("Players"):
 		if member.name != "Player" :
 			var target_dir = (Vector2(member.global_transform.origin.x, member.global_transform.origin.z) - Vector2(global_transform.origin.x, global_transform.origin.z)).normalized().angle()
 			var target_vector = Vector2(cos(target_dir), sin(target_dir))
 			target_vector.y = target_vector.y * -1
 			target_dir = Vector2.ZERO.angle_to_point(target_vector)
+			
 			var max_angle = PI * 2
 			var difference = fmod(target_dir - rotation.y, max_angle)
 			difference =  fmod(2 * difference, max_angle) - difference
-			
-			target_dir = rotation.y + difference
-			if abs(rotation.y - target_dir) >= 1 :
-				print("notabs")
-				if rotation.y < target_dir : rotation.y += abs(rotation.y - target_dir) * delta
-				if rotation.y > target_dir : rotation.y += -1 * abs(rotation.y - target_dir) * delta
-			else :
-				print("abs")
-				if rotation.y < target_dir : rotation.y += abs(rotation.y - target_dir) * delta
-				if rotation.y > target_dir : rotation.y -= abs(rotation.y - target_dir) * delta
+			if abs(rad2deg(difference)) <= 30 and nearest_enemy_rotation > target_dir:
+				nearest_enemy_rotation = target_dir
+				
+	if abs(rad2deg(nearest_enemy_rotation)) <= 360 :
+		rotation.y = lerp_angle(rotation.y, nearest_enemy_rotation, delta * speed_rotation)
 			
 func _on_Timer_timeout():
 	if state == FLY :

@@ -11,8 +11,13 @@ config_version=4
 [application]
 
 config/name="Boomerang"
-run/main_scene="res://scenes/World.tscn"
+run/main_scene="res://scenes/Map_Hill.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+HUD="*res://scenes/HUD.tscn"
+Global="*res://Global.tscn"
 
 [display]
 
