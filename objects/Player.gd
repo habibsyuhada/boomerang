@@ -11,7 +11,7 @@ var move_analog_value = Vector2.ZERO
 var isshot_analog_pressed = false
 var shot_analog_value = Vector2.ZERO
 
-var boomerang_name = ""
+var boomerang = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -26,17 +26,6 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	get_input()
-	for member in get_tree().get_nodes_in_group("Players"):
-		if member.name != "Player" :
-			var target_dir = (Vector2(member.global_transform.origin.x, member.global_transform.origin.z) - Vector2(global_transform.origin.x, global_transform.origin.z)).normalized().angle()
-			var target_vector = Vector2(cos(target_dir), sin(target_dir))
-			target_vector.y = target_vector.y * -1
-			target_dir = Vector2.ZERO.angle_to_point(target_vector)
-			#rotation.y = target_dir
-			var max_angle = PI * 2
-			var difference = fmod(target_dir - rotation.y, max_angle)
-			difference =  fmod(2 * difference, max_angle) - difference
-			#print(rad2deg(difference))
 			
 	if ismove_analog_pressed :
 		velocity = Vector3.ZERO
@@ -92,3 +81,8 @@ func _on_Shoot_Analog_analogRelease():
 
 func _on_Shoot_Analog_analogChange(force, pos):
 	shot_analog_value = pos
+
+func _on_Area_body_entered(body):
+	if body.name != name :
+		if body.get_class() == "KinematicBody" and "Boomerang" in body.name and body.name != boomerang.name :
+			Global.slow_motion()

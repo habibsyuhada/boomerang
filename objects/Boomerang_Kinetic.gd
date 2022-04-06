@@ -53,21 +53,23 @@ func _physics_process(delta):
 
 func reset():
 	state = IDLE
-	print(parent)
+	$CollisionShape.disabled = true
 	global_transform.origin = parent.global_transform.origin
 
 func idle():
 	global_transform.origin = parent.global_transform.origin
-	if Input.is_action_just_pressed("ui_select"):
+	if Input.is_action_just_pressed("ui_select") and parent.name == "Player":
 		throw()
 
 func throw():
-	state = FLY
-	$Timer.start(time_return)
-	rotation = parent.rotation
-	not_collide = true
-	speed_rotation = rand_range(1,10)
-	#print(speed_rotation)
+	if state == IDLE :
+		$CollisionShape.disabled = false
+		state = FLY
+		$Timer.start(time_return)
+		rotation = parent.rotation
+		not_collide = true
+		speed_rotation = rand_range(1,10)
+		#print(speed_rotation)
 
 func fly(delta):
 	velocity = Vector3(-throw_speed, 0, 0).rotated(Vector3(0, 1, 0), rotation.y)
@@ -136,5 +138,5 @@ func pull(delta):
 		state = FREE_ROAM
 
 func _on_Shoot_Analog_analogRelease():
-	if state == IDLE :
+	if state == IDLE and parent.name == "Player":
 		throw()

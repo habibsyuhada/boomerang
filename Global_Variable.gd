@@ -12,6 +12,7 @@ export (PackedScene) var Boomerang
 
 var Total_Player = 1
 var Total_NPC = 1
+var Time_Determination_NPC = 5
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
