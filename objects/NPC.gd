@@ -22,6 +22,8 @@ func _physics_process(delta):
 	check_target()
 	if path.size() > 0:
 		move_to_target(delta)
+	else:
+		get_target_path()
 		
 func move_to_target(delta):
 	velocity = Vector3.ZERO
@@ -35,7 +37,7 @@ func move_to_target(delta):
 		move_and_slide(velocity, Vector3.UP)
 		#global_transform.origin.y = 1
 		
-func get_target_path():
+func get_target_path_old():
 	var target_pos = null
 	if istargetspotted == false :
 		for target in get_tree().get_nodes_in_group("Players") :
@@ -50,15 +52,28 @@ func get_target_path():
 	if target_pos != null :
 		path = nav.get_simple_path(global_transform.origin, target_pos)
 
+func get_target_path():
+	var target_pos = null
+	if state == RANDOM :
+		if path.size() == 0:
+			var radius = 20
+			target_pos = Vector3(rand_range(-radius, radius), 1, rand_range(-radius, radius))
+	if target_pos != null :
+		path = nav.get_simple_path(global_transform.origin, target_pos)
+
 func check_target() :
 	if $RayCast.is_colliding():
 		var obj = $RayCast.get_collider()
 		if obj.is_in_group("Players"):
 			istargetspotted = true
-			boomerang.throw()
+			#boomerang.throw()
 	else:
 		istargetspotted = false
 
 func determination_behave():
-	print("Behave")
+	var random_value = rand_range(0, 10)
+	if(random_value < 5):
+		state = RANDOM
+	else:
+		state = RANDOM
 	pass

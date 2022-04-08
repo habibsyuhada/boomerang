@@ -83,6 +83,9 @@ func _on_Shoot_Analog_analogChange(force, pos):
 	shot_analog_value = pos
 
 func _on_Area_body_entered(body):
+	print(body)
 	if body.name != name :
-		if body.get_class() == "KinematicBody" and "Boomerang" in body.name and body.name != boomerang.name :
-			Global.slow_motion()
+		if body.get_class() == "KinematicBody" :
+			if "Boomerang" in body.name:
+				if body.name != boomerang.name:
+					Global.slow_motion()
