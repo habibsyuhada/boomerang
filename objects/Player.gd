@@ -10,6 +10,12 @@ var ismove_analog_pressed = false
 var move_analog_value = Vector2.ZERO
 var isshot_analog_pressed = false
 var shot_analog_value = Vector2.ZERO
+var dash_speed = 10
+var dash_velocity = Vector3.ZERO
+var isdashing = false
+var isdashing_cooldown = false
+var dash_timer = 0.1
+var dash_cooldown = 0.5
 
 var boomerang = null
 var power_throw = -0.05
@@ -22,14 +28,28 @@ func _ready():
 	HUD.connect("_on_Shoot_Analog_analogChange", self, "_on_Shoot_Analog_analogChange")
 	HUD.connect("_on_Shoot_Analog_analogPressed", self, "_on_Shoot_Analog_analogPressed")
 	HUD.connect("_on_Shoot_Analog_analogRelease", self, "_on_Shoot_Analog_analogRelease")
+	HUD.connect("_on_DashButton_pressed", self, "_on_DashButton_pressed")
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	get_input()
-			
-	if ismove_analog_pressed :
-		velocity = Vector3.ZERO
+	
+	if isdashing :
+		move_and_slide(dash_velocity)
+	else:
+		get_input()
+		
+		if ismove_analog_pressed :
+			velocity = Vector3.ZERO
+			if isshot_analog_pressed :
+				velocity.x = move_analog_value.x * speed / 2
+				velocity.z = move_analog_value.y * speed / 2
+			else:
+				velocity.x = move_analog_value.x * speed
+				velocity.z = move_analog_value.y * speed
+			if velocity != Vector3.ZERO and !isshot_analog_pressed :
+				rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(velocity.x, -velocity.z)))
+
 		if isshot_analog_pressed :
 			velocity.x = move_analog_value.x * speed / 2
 			velocity.z = move_analog_value.y * speed / 2
@@ -45,10 +65,8 @@ func _physics_process(delta):
 		if power_throw < 0.45 :
 			power_throw += delta*0.5
 			print(power_throw)
-	
-	move_and_slide(velocity)
-	global_transform.origin.y = 1
-	pass
+		move_and_slide(velocity)
+		global_transform.origin.y = 1
 	
 func get_input():
 	velocity = Vector3.ZERO
@@ -87,10 +105,29 @@ func _on_Shoot_Analog_analogRelease():
 
 func _on_Shoot_Analog_analogChange(force, pos):
 	shot_analog_value = pos
+	
+func _on_DashButton_pressed():
+	if !isdashing_cooldown :
+		var dash_vector = Vector2(-cos(rotation.y), sin(rotation.y))
+		dash_vector = dash_vector * speed * dash_speed
+		dash_velocity = Vector3(dash_vector.x, 1, dash_vector.y)
+		isdashing = true
+		$Dash_Timer.start(dash_timer)
 
 func _on_Area_body_entered(body):
+	print(body)
 	if body.name != name :
 		if body.get_class() == "KinematicBody" :
 			if "Boomerang" in body.name:
 				if body.name != boomerang.name:
 					Global.slow_motion()
+
+
+func _on_Dash_CoolDown_timeout():
+	isdashing_cooldown = false
+
+
+func _on_Dash_Timer_timeout():
+	isdashing = false
+	isdashing_cooldown = true
+	$Dash_CoolDown.start(dash_cooldown)
