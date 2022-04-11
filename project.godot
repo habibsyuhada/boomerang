@@ -11,7 +11,7 @@ config_version=4
 [application]
 
 config/name="Boomerang"
-run/main_scene="res://scenes/Map_Hill.tscn"
+run/main_scene="res://scenes/Map_Experiment.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -30,6 +30,11 @@ window/stretch/aspect="expand"
 
 enabled=PoolStringArray( "res://addons/analog_controller/plugin.cfg" )
 
+[global]
+
+"Emulate Touchscreen"=false
+"Emulate Touch"=false
+
 [input]
 
 ui_a={
@@ -37,6 +42,10 @@ ui_a={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":65,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
  ]
 }
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
 
 [physics]
 
