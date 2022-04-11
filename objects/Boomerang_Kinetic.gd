@@ -3,7 +3,7 @@ extends KinematicBody
 
 # Declare member variables here. Examples:
 enum {IDLE, FLY, RETURN, FREE_ROAM}
-export (float) var throw_speed = 100
+export (float) var throw_speed = 120
 export var time_return = 0.5
 var parent = null
 var state: int = IDLE
@@ -26,8 +26,6 @@ func _ready():
 	if parent == null :
 		parent = get_node_or_null('/root/World/Player')
 	reset()
-	
-	HUD.connect("_on_Shoot_Analog_analogRelease", self, "_on_Shoot_Analog_analogRelease")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -58,14 +56,15 @@ func reset():
 
 func idle():
 	global_transform.origin = parent.global_transform.origin
-	if Input.is_action_just_pressed("ui_select") and parent.name == "Player":
-		throw()
+	#if Input.is_action_just_pressed("ui_select") and parent.name == "Player":
+		#throw()
 
-func throw():
+func throw(power_throw:float = 0.0):
 	if state == IDLE :
+		#throw_speed = 100
 		$CollisionShape.disabled = false
 		state = FLY
-		$Timer.start(time_return)
+		$Timer.start(power_throw)
 		rotation = parent.rotation
 		not_collide = true
 		speed_rotation = rand_range(1,10)
@@ -136,7 +135,3 @@ func pull(delta):
 	if collision:
 		velocity = velocity.bounce(collision.normal)
 		state = FREE_ROAM
-
-func _on_Shoot_Analog_analogRelease():
-	if state == IDLE and parent.name == "Player":
-		throw()
