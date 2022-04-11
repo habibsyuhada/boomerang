@@ -33,14 +33,12 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	
+	velocity = Vector3.ZERO
 	if isdashing :
 		move_and_slide(dash_velocity)
 	else:
 		get_input()
-		
 		if ismove_analog_pressed :
-			velocity = Vector3.ZERO
 			if isshot_analog_pressed :
 				velocity.x = move_analog_value.x * speed / 2
 				velocity.z = move_analog_value.y * speed / 2
@@ -50,21 +48,23 @@ func _physics_process(delta):
 			if velocity != Vector3.ZERO and !isshot_analog_pressed :
 				rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(velocity.x, -velocity.z)))
 
-		if isshot_analog_pressed :
-			velocity.x = move_analog_value.x * speed / 2
-			velocity.z = move_analog_value.y * speed / 2
-		else:
-			velocity.x = move_analog_value.x * speed
-			velocity.z = move_analog_value.y * speed
+			if isshot_analog_pressed :
+				velocity.x = move_analog_value.x * speed / 2
+				velocity.z = move_analog_value.y * speed / 2
+			else:
+				velocity.x = move_analog_value.x * speed
+				velocity.z = move_analog_value.y * speed
+		
 		if velocity != Vector3.ZERO and !isshot_analog_pressed :
 			rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(velocity.x, -velocity.z)))
 			pass
 
-	if isshot_analog_pressed :
-		rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(shot_analog_value.x, -shot_analog_value.y)))
-		if power_throw < 0.45 :
-			power_throw += delta*0.5
-			print(power_throw)
+		if isshot_analog_pressed :
+			rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(shot_analog_value.x, -shot_analog_value.y)))
+			if power_throw < 0.45 :
+				power_throw += delta*0.5
+		
+		
 		move_and_slide(velocity)
 		global_transform.origin.y = 1
 	
@@ -115,7 +115,6 @@ func _on_DashButton_pressed():
 		$Dash_Timer.start(dash_timer)
 
 func _on_Area_body_entered(body):
-	print(body)
 	if body.name != name :
 		if body.get_class() == "KinematicBody" :
 			if "Boomerang" in body.name:

@@ -1,0 +1,74 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://assets/graphics/Analog_Outer.png" type="Texture" id=1]
+[ext_resource path="res://assets/graphics/Button_Blank.png" type="Texture" id=2]
+[ext_resource path="res://addons/analog_controller/analog.gd" type="Script" id=3]
+[ext_resource path="res://scenes/HUD.gd" type="Script" id=4]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 300, 300 )
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 40.0
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 100.0
+
+[node name="HUD" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Move_Analog" type="Node2D" parent="."]
+position = Vector2( 139, 583 )
+script = ExtResource( 3 )
+isDynamicallyShowing = true
+typeAnalogic = 4
+scaleBall = Vector2( 0.5, 0.5 )
+bigBallTexture = ExtResource( 1 )
+smallBallTexture = ExtResource( 2 )
+isHideDinamic = false
+
+[node name="Area_Move_Analog" type="Area2D" parent="."]
+position = Vector2( 131, 605 )
+
+[node name="Area_Shape_Move_Analog" type="CollisionShape2D" parent="Area_Move_Analog"]
+position = Vector2( -57, 57 )
+shape = SubResource( 1 )
+
+[node name="Shoot_Analog" type="Node2D" parent="."]
+position = Vector2( 1220, 640 )
+script = ExtResource( 3 )
+isDynamicallyShowing = true
+typeAnalogic = 4
+scaleBall = Vector2( 0.4, 0.4 )
+bigBallTexture = ExtResource( 1 )
+smallBallTexture = ExtResource( 2 )
+
+[node name="Area_Shoot_Analog" type="Area2D" parent="."]
+position = Vector2( 1220, 640 )
+
+[node name="Area_Shape_Shoot_Analog" type="CollisionShape2D" parent="Area_Shoot_Analog"]
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Area_Shoot_Analog"]
+scale = Vector2( 0.4, 0.4 )
+texture = ExtResource( 2 )
+
+[node name="DashButton" type="TouchScreenButton" parent="."]
+position = Vector2( 1061, 600 )
+scale = Vector2( 0.4, 0.4 )
+normal = ExtResource( 2 )
+shape = SubResource( 3 )
+
+[connection signal="analogChange" from="Move_Analog" to="." method="_on_Move_Analog_analogChange"]
+[connection signal="analogPressed" from="Move_Analog" to="." method="_on_Move_Analog_analogPressed"]
+[connection signal="analogRelease" from="Move_Analog" to="." method="_on_Move_Analog_analogRelease"]
+[connection signal="analogChange" from="Shoot_Analog" to="." method="_on_Shoot_Analog_analogChange"]
+[connection signal="analogPressed" from="Shoot_Analog" to="." method="_on_Shoot_Analog_analogPressed"]
+[connection signal="analogRelease" from="Shoot_Analog" to="." method="_on_Shoot_Analog_analogRelease"]
+[connection signal="pressed" from="DashButton" to="." method="_on_DashButton_pressed"]
+[connection signal="released" from="DashButton" to="." method="_on_DashButton_released"]
