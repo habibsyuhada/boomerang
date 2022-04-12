@@ -10,7 +10,6 @@ func _ready():
 	Global.Total_NPC = 1
 	
 	$Timer_NPC_Determination.start(Global.Time_Determination_NPC)
-	
 	start()
 	
 	#var player = Global.Player.instance()
@@ -46,6 +45,8 @@ func start():
 			player.boomerang = get_node("/root/World/"+boomerang.name)
 			
 			respawn_point_num +=1
+			$Camera.add_target(player)
+			$Camera.add_target(boomerang)
 	
 	for n in Global.Total_NPC:
 		if respawn_point_num+1 <= len(respawn_points) :
