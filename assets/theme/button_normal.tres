@@ -1,0 +1,19 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=2]
+
+[ext_resource path="res://assets/theme/Artboard 1.png" type="Texture" id=1]
+
+[resource]
+content_margin_left = 6.0
+content_margin_right = 6.0
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+texture = ExtResource( 1 )
+region_rect = Rect2( 0, 0, 280, 122 )
+margin_left = 75.7895
+margin_right = 74.7368
+margin_top = 34.7368
+margin_bottom = 25.2632
+expand_margin_left = 20.0
+expand_margin_right = 20.0
+expand_margin_top = 20.0
+expand_margin_bottom = 20.0
