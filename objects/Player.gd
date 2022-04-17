@@ -18,7 +18,7 @@ var dash_timer = 0.1
 var dash_cooldown = 0.5
 
 var boomerang = null
-var power_throw = -0.05
+var power_throw = 0.05
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -62,7 +62,7 @@ func _physics_process(delta):
 		if isshot_analog_pressed :
 			rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(shot_analog_value.x, -shot_analog_value.y)))
 			if power_throw < 0.45 :
-				power_throw += delta*0.5
+				power_throw += delta*0.25
 		
 		
 		move_and_slide(velocity)
@@ -101,7 +101,7 @@ func _on_Shoot_Analog_analogRelease():
 	isshot_analog_pressed = false
 	if power_throw > 0 :
 		boomerang.throw(power_throw)
-	power_throw = -0.05
+	power_throw = 0.05
 
 func _on_Shoot_Analog_analogChange(force, pos):
 	shot_analog_value = pos

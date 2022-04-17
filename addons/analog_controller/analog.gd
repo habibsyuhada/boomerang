@@ -24,7 +24,7 @@ var halfSize = Vector2()
 var ballPos = Vector2()
 var squaredHalfSizeLenght = 0
 var currentPointerIDX = INACTIVE
-var disable = false
+export var disable = false
 
 export(bool) var isDynamicallyShowing = false
 export(typesAnalog) var typeAnalogic = typesAnalog.DIRECTION_8

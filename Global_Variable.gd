@@ -14,6 +14,7 @@ var Time_Determination_NPC = 5
 #TRANSITION=========================
 var followingScene = ""
 var currentScene = ""
+var istransition = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -25,6 +26,10 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+
+func waits(s):
+	$Timer.start(s)
+	yield($Timer, "timeout")
 
 func slow_motion(time_scale:float = 0.05):
 	Engine.time_scale = time_scale
@@ -38,13 +43,13 @@ func goto_scene(path):
 	followingScene = path
 	$AnimationPlayer.playback_speed = 2
 	$AnimationPlayer.play_backwards()
+	istransition = true
 
 func _deferred_goto_scene(path):
 	# It is now safe to remove the current scene
 	currentScene.free()
 
 	# Load the new scene.
-	print(path)
 	var s = ResourceLoader.load(path)
 
 	# Instance the new scene.
@@ -61,4 +66,6 @@ func _deferred_goto_scene(path):
 func _on_AnimationPlayer_animation_finished(anim_name):
 	if followingScene != "":
 		call_deferred("_deferred_goto_scene", followingScene)
+	if istransition and followingScene == "":
+		istransition = false
 	followingScene = ""

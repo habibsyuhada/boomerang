@@ -18,8 +18,6 @@ var rotation_velocity = 0.0
 var position_old = Vector3.ZERO
 var speed_rotation = 10.0
 
-var owner_name = ""
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -68,7 +66,7 @@ func throw(power_throw:float = 0.0):
 		rotation = parent.rotation
 		not_collide = true
 		speed_rotation = rand_range(1,10)
-		#print(speed_rotation)
+		print(power_throw)
 
 func fly(delta):
 	velocity = Vector3(-throw_speed, 0, 0).rotated(Vector3(0, 1, 0), rotation.y)
@@ -80,7 +78,7 @@ func fly(delta):
 	
 	var nearest_enemy_rotation = 9999.9
 	for member in get_tree().get_nodes_in_group("Players"):
-		if member.name != "Player" :
+		if member.name != parent.name :
 			var target_dir = (Vector2(member.global_transform.origin.x, member.global_transform.origin.z) - Vector2(global_transform.origin.x, global_transform.origin.z)).normalized().angle()
 			var target_vector = Vector2(cos(target_dir), sin(target_dir))
 			target_vector.y = target_vector.y * -1

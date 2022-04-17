@@ -12,7 +12,12 @@ signal _on_DashButton_pressed()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	hud_enable_status(false)
+
+func hud_enable_status(status):
+	visible = status
+	$Move_Analog.disable = !status
+	$Shoot_Analog.disable = !status
 
 func _on_Move_Analog_analogChange(force, pos):
 	emit_signal("_on_Move_Analog_analogChange", force, pos)

@@ -5,21 +5,11 @@ var respawn_points = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	HUD.visible = true
+	#HUD.hud_enable_status(true)
 	Global.Total_Player = 1
 	Global.Total_NPC = 1
-	
-	$Timer_NPC_Determination.start(Global.Time_Determination_NPC)
+	#$Timer_NPC_Determination.start(Global.Time_Determination_NPC)
 	start()
-	
-	#var player = Global.Player.instance()
-	#add_child(player)
-	#player.name = "Player1"
-	
-	#var boomerang = Global.Boomerang.instance()
-	#boomerang.name = "Boomerang_" + player.name
-	#boomerang.parent = get_node("/root/World/"+player.name)
-	#add_child(boomerang)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -47,6 +37,10 @@ func start():
 			respawn_point_num +=1
 			$Camera.add_target(player)
 			$Camera.add_target(boomerang)
+			
+			var target_camera = Vector2(player.global_transform.origin.x, player.global_transform.origin.z)
+			$Camera.set_target_location(target_camera)
+			yield(Global.waits(2), "completed")
 	
 	for n in Global.Total_NPC:
 		if respawn_point_num+1 <= len(respawn_points) :
@@ -63,7 +57,17 @@ func start():
 			player.boomerang = get_node("/root/World/"+boomerang.name)
 			
 			respawn_point_num +=1
-
+			
+			var target_camera = Vector2(player.global_transform.origin.x, player.global_transform.origin.z)
+			$Camera.set_target_location(target_camera)
+			yield(Global.waits(2), "completed")
+	
+	$Camera.isfollowtarget = true
+	yield(Global.waits(3), "completed")
+	HUD.hud_enable_status(true)
+	for member in get_tree().get_nodes_in_group("Players"):
+		if member.name != "Player" :
+			member.change_state_to_chase_player()
 
 func _on_Timer_NPC_Path_timeout():
 	get_tree().call_group("NPCs", 'get_target_path')
