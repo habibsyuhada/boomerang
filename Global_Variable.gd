@@ -28,8 +28,12 @@ func _ready():
 #	pass
 
 func waits(s):
-	$Timer.start(s)
-	yield($Timer, "timeout")
+	var t = Timer.new()
+	t.one_shot = true
+	self.add_child(t)
+	t.start(s)
+	yield(t, "timeout")
+	t.queue_free()
 
 func slow_motion(time_scale:float = 0.05):
 	Engine.time_scale = time_scale

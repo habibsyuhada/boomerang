@@ -61,7 +61,7 @@ func _physics_process(delta):
 
 		if isshot_analog_pressed :
 			rotation_degrees.y = rad2deg(Vector2(0, 0).angle_to_point(Vector2(shot_analog_value.x, -shot_analog_value.y)))
-			if power_throw < 0.45 :
+			if power_throw < 0.5 :
 				power_throw += delta*0.25
 		
 		

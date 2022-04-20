@@ -3,8 +3,9 @@ extends KinematicBody
 
 # Declare member variables here. Examples:
 enum {IDLE, FLY, RETURN, FREE_ROAM}
-export (float) var throw_speed = 120
-export var time_return = 0.5
+export (float) var max_throw_speed = 80
+var throw_speed = 0
+export var time_return = 0.25
 var parent = null
 var state: int = IDLE
 var velocity: = Vector3.ZERO
@@ -59,20 +60,22 @@ func idle():
 
 func throw(power_throw:float = 0.0):
 	if state == IDLE :
-		#throw_speed = 100
+		throw_speed = max_throw_speed * power_throw / 0.5 + 40 #0.5 max power dari player
+		print(throw_speed)
+		print(power_throw)
 		$CollisionShape.disabled = false
 		state = FLY
-		$Timer.start(power_throw)
+		$Timer.start(0.25 + (0.2 * power_throw / 0.5))
 		rotation = parent.rotation
 		not_collide = true
 		speed_rotation = rand_range(1,10)
-		print(power_throw)
 
 func fly(delta):
 	velocity = Vector3(-throw_speed, 0, 0).rotated(Vector3(0, 1, 0), rotation.y)
 	var collision = move_and_collide(velocity * delta)
 	$Sprite.rotation_degrees.y += spin_speed*delta
 	if collision:
+		print("TABRAK")
 		velocity = velocity.bounce(collision.normal)
 		state = FREE_ROAM
 	

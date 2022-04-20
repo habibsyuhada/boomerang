@@ -45,8 +45,5 @@ __meta__ = {
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Transition = SubResource( 1 )
 
-[node name="Timer" type="Timer" parent="."]
-one_shot = true
-
 [connection signal="timeout" from="Timer_Slow_Motion" to="." method="_on_Timer_Slow_Motion_timeout"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
